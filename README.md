@@ -1,1 +1,1 @@
-#simple manual with diferent important commands
+#simple manual with different important commands
